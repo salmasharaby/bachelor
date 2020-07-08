@@ -1,29 +1,44 @@
-const express = require('express');
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const path = require("path");
 const app = express();
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-dotenv.config();
 
 
-app.use(cors());
-app.use(bodyParser.json());
-//Connect to db
-const db = process.env.DB_CONNECT
-mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true , useCreateIndex : true , useFindAndModify: false  })
-    .then(() => console.log("MongoDB successfully connected"))
+var Users = require('./routes/Users')
+
+
+
+// Connect to Mongo
+mongoose
+    .connect('mongodb+srv://salma:salmas123@cluster0-llnce.mongodb.net/test?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useFindAndModify: false,
+        useCreateIndex: true,
+        useUnifiedTopology: true
+    }) // Adding new mongo url parser
+    .then(() => console.log("MongoDB Connected successfully"))
     .catch(err => console.log(err));
-
-
-//Import Routes
-const authRoute = require('./routes/auth');
-
-//Middleware
+// Express body parser
 app.use(express.json());
+app.use(
+    express.urlencoded({
+        extended: false
+    })
+);
+// Cors
+app.use(cors());
+// Serve static assets if in production
 
-//Route Middlewares
-app.use('/api/user', authRoute);
+// Entry point
+app.get("/", (req, res) => res.send(`<h1>Welcome to Beat the QR app</h1>`));
+// Use Routes
+app.use('/users', Users)
 
-app.listen(3000, () => console.log('Server Up and runinng'));
-
+// Wrong path
+app.use((req, res) =>
+    res.status(404).send(`<h1>Can not find what you're looking for</h1>`)
+);
+// Port
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`Server started on port ${port}`));

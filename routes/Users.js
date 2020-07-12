@@ -4,7 +4,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-const User = require('../model/User')
+const User = require('../models/User')
 users.use(cors())
 
 process.env.SECRET_KEY = 'secret'
@@ -35,7 +35,7 @@ users.post('/register', (req, res) => {
                         })
                 })
             } else {
-                res.json({ error: 'User already exists' })
+                res.json({ error: 'User already exists' , status:"404"})
             }
         })
         .catch(err => {
@@ -60,13 +60,15 @@ users.post('/login', (req, res) => {
                     let token = jwt.sign(payload, process.env.SECRET_KEY, {
                         expiresIn: 1440
                     })
-                    res.send(token)
+                    res.send({token , status:"200"})
                 } else {
                     // Passwords don't match
-                    res.json({ error: 'User does not exist' })
+                    res.json({ error: 'Email or Password is incorrect ',
+                    status:'404' } )
                 }
             } else {
-                res.json({ error: 'User does not exist' })
+                res.json({ error: 'Email or Password is incorrect',
+            status:'404' })
             }
         })
         .catch(err => {

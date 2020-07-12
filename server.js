@@ -1,3 +1,4 @@
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -17,7 +18,7 @@ mongoose
         useCreateIndex: true,
         useUnifiedTopology: true
     }) // Adding new mongo url parser
-    .then(() => console.log("MongoDB Connected successfully"))
+    .then(() => console.log("MongoDB Connected..."))
     .catch(err => console.log(err));
 // Express body parser
 app.use(express.json());
@@ -30,10 +31,13 @@ app.use(
 app.use(cors());
 // Serve static assets if in production
 
+
 // Entry point
 app.get("/", (req, res) => res.send(`<h1>Welcome to Beat the QR app</h1>`));
 // Use Routes
 app.use('/users', Users)
+
+
 
 // Wrong path
 app.use((req, res) =>
